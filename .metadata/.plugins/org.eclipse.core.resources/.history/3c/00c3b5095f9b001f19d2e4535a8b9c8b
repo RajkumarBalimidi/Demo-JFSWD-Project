@@ -50,7 +50,7 @@
 <body>
 <div class="success">
 	<h3>Inserted Successfully</h3>
-	<a href="index.html">OK</a>
+	<a href="register.html">OK</a>
 </div>
 </body>
 </html>
