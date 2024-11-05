@@ -1,0 +1,72 @@
+package com.tap.register;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.io.FileNotFoundException;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.sql.SQLException;
+
+/**
+ * Servlet implementation class Register
+ */
+//@WebServlet("/Register")
+public class Register extends HttpServlet {
+	
+	private static String query = "insert into `demoproject` (`name`,`email`,`image`) values(?,?,?)";
+	private static String get = "select * from demoproject";
+	private Connection con;
+	private PreparedStatement pstmt;
+	private FileInputStream fis;
+	private int res;
+
+	@Override
+	public void init() throws ServletException {
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/demoproject","root","MySQL");
+		} 
+		catch (ClassNotFoundException | SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Override
+	protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		
+		HttpSession session = req.getSession();
+		String name = req.getParameter("name");
+		String email = req.getParameter("email");
+		String image = req.getParameter("image");
+		
+		try {
+			pstmt = con.prepareStatement(query);
+			pstmt.setString(1, name);
+			pstmt.setString(2, email);
+			pstmt.setString(3, image);
+			res = pstmt.executeUpdate();
+			if(res != 0)
+			{
+				resp.sendRedirect("success.jsp");
+			}
+			else
+			{
+				resp.sendRedirect("failure.jsp");				
+			}
+			
+	
+		} 
+		catch (SQLException | FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+	}
+
+}
